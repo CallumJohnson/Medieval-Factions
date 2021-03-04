@@ -20,6 +20,8 @@ import static org.bukkit.Bukkit.getServer;
 
 public class Faction {
 
+    // temporary
+    int maxPower = 0;
     // saved
     private ArrayList<UUID> members = new ArrayList<>();
     private ArrayList<String> enemyFactions = new ArrayList<>();
@@ -35,9 +37,6 @@ public class Faction {
     private Location factionHome = null;
     private ArrayList<Gate> gates = new ArrayList<>();
     private String prefix = "none";
-
-    // temporary
-    int maxPower = 0;
     private ArrayList<UUID> invited = new ArrayList<>();
     private ArrayList<String> attemptedTruces = new ArrayList<>();
     private ArrayList<String> attemptedAlliances = new ArrayList<>();
@@ -60,14 +59,13 @@ public class Faction {
         prefix = initialName;
     }
 
-    public ArrayList<Gate> getGates()
-    {
-    	return gates;
-    }    
-    
     // Must recieve json data
     public Faction(Map<String, String> data) {
         this.load(data);
+    }
+
+    public ArrayList<Gate> getGates() {
+        return gates;
     }
 
     public int getNumOfficers() {
@@ -152,12 +150,12 @@ public class Faction {
         return allyFactions;
     }
 
-    public void setFactionHome(Location l) {
-        factionHome = l;
-    }
-
     public Location getFactionHome() {
         return factionHome;
+    }
+
+    public void setFactionHome(Location l) {
+        factionHome = l;
     }
 
     public int getCumulativePowerLevel() {
@@ -166,8 +164,7 @@ public class Faction {
 
         if (vassals.size() == 0 || (withoutVassalContribution < (getMaximumCumulativePowerLevel() / 2))) {
             return withoutVassalContribution;
-        }
-        else {
+        } else {
             return withVassalContribution;
         }
     }
@@ -176,13 +173,10 @@ public class Faction {
 
         int powerLevel = 0;
 
-        for (UUID playerUUID : members){
-            try
-            {
+        for (UUID playerUUID : members) {
+            try {
                 powerLevel += PersistentData.getInstance().getPlayersPowerRecord(playerUUID).getPowerLevel();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 System.out.println(LocaleManager.getInstance().getText("ErrorPlayerPowerRecordForUUIDNotFound"));
             }
         }
@@ -209,27 +203,24 @@ public class Faction {
     public int getMaximumCumulativePowerLevel() {
         int maxPower = 0;
 
-        for (UUID playerUUID : members){
-            try
-            {
+        for (UUID playerUUID : members) {
+            try {
                 maxPower += PersistentData.getInstance().getPlayersPowerRecord(playerUUID).maxPower();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 System.out.println(LocaleManager.getInstance().getText("ErrorPlayerPowerRecordForUUIDNotFound"));
             }
         }
         return maxPower;
     }
 
-    public int calculateMaxOfficers(){
+    public int calculateMaxOfficers() {
         int officersPerXNumber = MedievalFactions.getInstance().getConfig().getInt("officerPerMemberCount");
         int officersFromConfig = members.size() / officersPerXNumber;
         return 1 + officersFromConfig;
     }
 
     public boolean addOfficer(UUID newOfficer) {
-        if (officers.size() < calculateMaxOfficers() && !officers.contains(newOfficer)){
+        if (officers.size() < calculateMaxOfficers() && !officers.contains(newOfficer)) {
             officers.add(newOfficer);
             return true;
         } else {
@@ -326,7 +317,7 @@ public class Faction {
     public String getMemberListSeparatedByCommas() {
         ArrayList<UUID> uuids = getMemberList();
         String players = "";
-        for(UUID uuid : uuids) {
+        for (UUID uuid : uuids) {
             String playerName = UUIDChecker.getInstance().findPlayerNameBasedOnUUID(uuid);
             players += playerName + ", ";
         }
@@ -340,10 +331,6 @@ public class Faction {
         return members.size();
     }
 
-    public void setOwner(UUID UUID) {
-        owner = UUID;
-    }
-
     public boolean isOwner(UUID UUID) {
         return owner.equals(UUID);
     }
@@ -352,20 +339,24 @@ public class Faction {
         return owner;
     }
 
-    public void setName(String newName) {
-        name = newName;
+    public void setOwner(UUID UUID) {
+        owner = UUID;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setDescription(String newDesc) {
-        description = newDesc;
+    public void setName(String newName) {
+        name = newName;
     }
 
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String newDesc) {
+        description = newDesc;
     }
 
     public void addMember(UUID UUID, int power) {
@@ -383,7 +374,7 @@ public class Faction {
     }
 
     public Map<String, String> save() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();;
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Map<String, String> saveMap = new HashMap<>();
 
         saveMap.put("members", gson.toJson(members));
@@ -400,20 +391,19 @@ public class Faction {
         saveMap.put("liege", gson.toJson(liege));
         saveMap.put("prefix", gson.toJson(prefix));
 
-        ArrayList<String> gateList = new ArrayList<String>(); 
-        for (Gate gate : gates)
-        {
-        	Map <String, String> map = gate.save();
-        	gateList.add(gson.toJson(map));
+        ArrayList<String> gateList = new ArrayList<String>();
+        for (Gate gate : gates) {
+            Map<String, String> map = gate.save();
+            gateList.add(gson.toJson(map));
         }
-        saveMap.put("factionGates", gson.toJson(gateList));        
+        saveMap.put("factionGates", gson.toJson(gateList));
         return saveMap;
     }
 
     private Map<String, String> saveLocation(Gson gson) {
         Map<String, String> saveMap = new HashMap<>();
 
-        if (factionHome != null && factionHome.getWorld() != null){
+        if (factionHome != null && factionHome.getWorld() != null) {
             saveMap.put("worldName", gson.toJson(factionHome.getWorld().getName()));
             saveMap.put("x", gson.toJson(factionHome.getX()));
             saveMap.put("y", gson.toJson(factionHome.getY()));
@@ -426,9 +416,12 @@ public class Faction {
     private void load(Map<String, String> data) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        Type arrayListTypeString = new TypeToken<ArrayList<String>>(){}.getType();
-        Type arrayListTypeUUID = new TypeToken<ArrayList<UUID>>(){}.getType();
-        Type mapType = new TypeToken<HashMap<String, String>>(){}.getType();
+        Type arrayListTypeString = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        Type arrayListTypeUUID = new TypeToken<ArrayList<UUID>>() {
+        }.getType();
+        Type mapType = new TypeToken<HashMap<String, String>>() {
+        }.getType();
 
         members = gson.fromJson(data.get("members"), arrayListTypeUUID);
         enemyFactions = gson.fromJson(data.get("enemyFactions"), arrayListTypeString);
@@ -443,34 +436,30 @@ public class Faction {
         liege = gson.fromJson(data.getOrDefault("liege", "none"), String.class);
         vassals = gson.fromJson(data.getOrDefault("vassals", "[]"), arrayListTypeString);
         prefix = loadDataOrDefault(gson, data, "prefix", getName());
-        
+
 //        System.out.println("Loading Faction Gates...");
         ArrayList<String> gateList = new ArrayList<String>();
         gateList = gson.fromJson(data.get("factionGates"), arrayListTypeString);
-        if (gateList != null)
-        {
-	        for (String item : gateList)
-	        {
-	        	Gate g = Gate.load(item);
-	        	gates.add(g);
-	        }
-        }
-        else
-        {
-        	System.out.println(LocaleManager.getInstance().getText("MissingFactionGatesJSONCollection"));
+        if (gateList != null) {
+            for (String item : gateList) {
+                Gate g = Gate.load(item);
+                gates.add(g);
+            }
+        } else {
+            System.out.println(LocaleManager.getInstance().getText("MissingFactionGatesJSONCollection"));
         }
     }
 
     private String loadDataOrDefault(Gson gson, Map<String, String> data, String key, String def) {
         try {
             return gson.fromJson(data.getOrDefault(key, def), String.class);
-        } catch(Exception e) {
+        } catch (Exception e) {
             return def;
         }
     }
 
-    private Location loadLocation(HashMap<String, String> data, Gson gson){
-        if (data.size() != 0){
+    private Location loadLocation(HashMap<String, String> data, Gson gson) {
+        if (data.size() != 0) {
             World world = getServer().createWorld(new WorldCreator(gson.fromJson(data.get("worldName"), String.class)));
             double x = gson.fromJson(data.get("x"), Double.TYPE);
             double y = gson.fromJson(data.get("y"), Double.TYPE);
@@ -497,7 +486,7 @@ public class Faction {
     }
 
     public boolean isVassal(String faction) {
-        return(containsIgnoreCase(vassals, faction));
+        return (containsIgnoreCase(vassals, faction));
     }
 
     public boolean hasLiege() {
@@ -518,46 +507,34 @@ public class Faction {
         removeIfContainsIgnoreCase(vassals, faction);
     }
 
-    public void setLiege(String newLiege) {
-        liege = newLiege;
+    public void addGate(Gate gate) {
+        gates.add(gate);
     }
 
-    public void addGate(Gate gate)
-    {
-    	gates.add(gate);
-    }
-    
-    public void removeGate(Gate gate)
-    {
-    	gate.fillGate();
-    	gates.remove(gate);
+    public void removeGate(Gate gate) {
+        gate.fillGate();
+        gates.remove(gate);
     }
 
-    public boolean hasGateTrigger(Block block)
-    {
-    	for(Gate g : gates)
-    	{
-    		if (g.getTrigger().getX() == block.getX() && g.getTrigger().getY() == block.getY() && g.getTrigger().getZ() == block.getZ() &&
-    				g.getTrigger().getWorld().equalsIgnoreCase(block.getWorld().getName()))
-    		{
-    			return true;
-    		}
-    	}
-		return false;
+    public boolean hasGateTrigger(Block block) {
+        for (Gate g : gates) {
+            if (g.getTrigger().getX() == block.getX() && g.getTrigger().getY() == block.getY() && g.getTrigger().getZ() == block.getZ() &&
+                    g.getTrigger().getWorld().equalsIgnoreCase(block.getWorld().getName())) {
+                return true;
+            }
+        }
+        return false;
     }
-    
-    public ArrayList<Gate> getGatesForTrigger(Block block)
-    {
-    	ArrayList<Gate> gateList = new ArrayList<>();
-    	for(Gate g : gates)
-    	{
-    		if (g.getTrigger().getX() == block.getX() && g.getTrigger().getY() == block.getY() && g.getTrigger().getZ() == block.getZ() &&
-    				g.getTrigger().getWorld().equalsIgnoreCase(block.getWorld().getName()))
-    		{
-    			gateList.add(g);
-    		}
-    	}
-		return gateList;
+
+    public ArrayList<Gate> getGatesForTrigger(Block block) {
+        ArrayList<Gate> gateList = new ArrayList<>();
+        for (Gate g : gates) {
+            if (g.getTrigger().getX() == block.getX() && g.getTrigger().getY() == block.getY() && g.getTrigger().getZ() == block.getZ() &&
+                    g.getTrigger().getWorld().equalsIgnoreCase(block.getWorld().getName())) {
+                gateList.add(g);
+            }
+        }
+        return gateList;
     }
 
     public String getLiege() {
@@ -566,6 +543,10 @@ public class Faction {
 
     public boolean isLiege() {
         return vassals.size() != 0;
+    }
+
+    public void setLiege(String newLiege) {
+        liege = newLiege;
     }
 
     public String getVassalsSeparatedByCommas() {

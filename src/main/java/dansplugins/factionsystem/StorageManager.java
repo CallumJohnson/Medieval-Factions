@@ -27,7 +27,7 @@ public class StorageManager {
 
     private final static Type LIST_MAP_TYPE = new TypeToken<ArrayList<HashMap<String, String>>>(){}.getType();
 
-    private Gson gson = new GsonBuilder().setPrettyPrinting().create();;
+    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     private StorageManager() {
 
@@ -119,7 +119,7 @@ public class StorageManager {
         loadClaimedChunks();
         loadPlayerPowerRecords();
         loadPlayerActivityRecords();
-        loadLockedBlocks();;
+        loadLockedBlocks();
     }
 
     private void loadFactions() {
@@ -179,7 +179,7 @@ public class StorageManager {
 
     private ArrayList<HashMap<String, String>> loadDataFromFilename(String filename) {
         try{
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();;
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
             JsonReader reader = new JsonReader(new FileReader(filename));
             return gson.fromJson(reader, LIST_MAP_TYPE);
         } catch (FileNotFoundException e) {

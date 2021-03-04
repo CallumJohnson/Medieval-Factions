@@ -80,7 +80,8 @@ public class DynmapManager {
     // Dynmap integration related members
     private Map<String, AreaMarker> resareas = new HashMap<String, AreaMarker>();
     private Map<String, Marker> resmark = new HashMap<String, Marker>();
-    enum direction { XPLUS, ZPLUS, XMINUS, ZMINUS };
+    enum direction { XPLUS, ZPLUS, XMINUS, ZMINUS }
+
     private Plugin dynmap;
     private DynmapCommonAPI dynmapAPI;
     private MarkerAPI markerAPI;

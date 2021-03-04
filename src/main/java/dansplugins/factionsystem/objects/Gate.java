@@ -55,14 +55,15 @@ public class Gate {
 	
 	private Sound soundEffect = Sound.BLOCK_ANVIL_HIT;
 	
-	private enum GateStatus { READY, OPENING, CLOSING };
+	private enum GateStatus { READY, OPENING, CLOSING }
+
 	private GateStatus gateStatus = GateStatus.READY;
 	
 	public enum ErrorCodeAddCoord { None, WorldMismatch, MaterialMismatch, NoCuboids, Oversized, LessThanThreeHigh }
 	
     public Map<String, String> save() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();;
-        Map<String, String> saveMap = new HashMap<>();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		Map<String, String> saveMap = new HashMap<>();
 
         saveMap.put("name", name);
         saveMap.put("factionName", factionName);
@@ -81,9 +82,9 @@ public class Gate {
     public static Gate load(String jsonData) {
 //    	System.out.println("Gate Load");
     	
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();;
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        Gate newGate = new Gate();
+		Gate newGate = new Gate();
 
         try
         {
@@ -756,7 +757,7 @@ public class Gate {
     				{
     					b = getWorld().getBlockAt(x, y, coord1.getZ());
     					b.setType(material);
-    				};
+    				}
 					if (b != null)
 						getWorld().playSound(b.getLocation(), soundEffect, 0.1f, 0.1f);
 				}
@@ -789,7 +790,7 @@ public class Gate {
     				{
     					b = getWorld().getBlockAt(coord1.getX(), y, z);
     					b.setType(material);
-    				};
+    				}
 					if (b != null)
 						getWorld().playSound(b.getLocation(), soundEffect, 0.1f, 0.1f);
 				}		
@@ -841,12 +842,12 @@ public class Gate {
 		{
 			return true;
 		}
-		
+
 		if (trigger.equals(targetBlock))
 		{
 			return true;
 		}
-		
+
 		return false;
 	}
 	

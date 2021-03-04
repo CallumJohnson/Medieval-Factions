@@ -61,9 +61,9 @@ public class ClaimedChunk {
     }
 
     public Map<String, String> save() {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();;
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-            Map<String, String> saveMap = new HashMap<>();
+        Map<String, String> saveMap = new HashMap<>();
             saveMap.put("X", gson.toJson(chunk.getX()));
             saveMap.put("Z", gson.toJson(chunk.getZ()));
             saveMap.put("world", gson.toJson(world));

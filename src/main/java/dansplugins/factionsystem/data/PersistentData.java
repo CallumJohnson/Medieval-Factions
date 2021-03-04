@@ -81,12 +81,9 @@ public class PersistentData {
         return null;
     }
 
-    public PlayerActivityRecord getPlayerActivityRecord(UUID uuid)
-    {
-        for (PlayerActivityRecord record : getPlayerActivityRecords())
-        {
-            if (record.getPlayerUUID().equals(uuid))
-            {
+    public PlayerActivityRecord getPlayerActivityRecord(UUID uuid) {
+        for (PlayerActivityRecord record : getPlayerActivityRecords()) {
+            if (record.getPlayerUUID().equals(uuid)) {
                 return record;
             }
         }
@@ -196,14 +193,10 @@ public class PersistentData {
         return false;
     }
 
-    public boolean isGateBlock(Block targetBlock)
-    {
-        for (Faction faction : getFactions())
-        {
-            for (Gate gate : faction.getGates())
-            {
-                if (gate.hasBlock(targetBlock))
-                {
+    public boolean isGateBlock(Block targetBlock) {
+        for (Faction faction : getFactions()) {
+            for (Gate gate : faction.getGates()) {
+                if (gate.hasBlock(targetBlock)) {
                     return true;
                 }
             }
@@ -242,8 +235,7 @@ public class PersistentData {
             if (currentBlock.getFactionName().equalsIgnoreCase(factionName)) {
                 try {
                     itr.remove();
-                }
-                catch(Exception e) {
+                } catch (Exception e) {
                     System.out.println("An error has occurred during lock removal.");
                 }
             }
